@@ -21,5 +21,3 @@ local.properties
 keystore.properties
 
 原项目/
-# 内部参考资料，不随仓库发布
-docs/MIUIX_DEPENDENCIES.md
