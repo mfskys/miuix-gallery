@@ -1,5 +1,7 @@
 # miuix-gallery
 
+[![Build](https://github.com/mfskys/miuix-gallery/actions/workflows/build.yml/badge.svg)](https://github.com/mfskys/miuix-gallery/actions/workflows/build.yml)
+
 > **miuix-gallery** —— [miuix](https://github.com/mfskys/miuix) 的 Android 演示应用（组件展示）。
 > 界面与主题全部由 miuix 组件构建，本仓库只做展示，不含业务逻辑。
 
