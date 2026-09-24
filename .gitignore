@@ -21,3 +21,6 @@ local.properties
 keystore.properties
 
 原项目/
+
+# Local-only collaboration guide (never push)
+/docs/LOCAL_GUIDE.md
