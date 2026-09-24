@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+
+# Kotlin
+.kotlin/
+
+# Android Studio
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Local machine SDK path
+local.properties
+
+# Signing material
+*.jks
+*.keystore
+keystore.properties
+
+原项目/
+# 内部参考资料，不随仓库发布
+docs/MIUIX_DEPENDENCIES.md

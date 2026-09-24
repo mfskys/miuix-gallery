@@ -1,0 +1,19 @@
+# The Gradle wrapper must stay LF on every platform, otherwise a checkout on
+# Windows or macOS leaves gradlew without its interpreter line.
+gradlew text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Normalise the rest.
+* text=auto
+
+# Never normalise binaries.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.apk binary
+*.jar binary
+*.jks binary
+*.keystore binary

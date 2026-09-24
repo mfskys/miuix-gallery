@@ -1,0 +1,372 @@
+// Copyright 2025, compose-miuix-ui contributors
+// SPDX-License-Identifier: Apache-2.0
+
+package org.dpdns.mfsky.miuix.ui.sections
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.SmallTitle
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextButton
+import top.yukonga.miuix.kmp.basic.VerticalDivider
+import top.yukonga.miuix.kmp.layout.DialogDefaults
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
+import top.yukonga.miuix.kmp.preference.ArrowPreference
+import top.yukonga.miuix.kmp.theme.LocalDismissState
+import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.window.WindowDialog
+
+fun LazyListScope.dialogSection() {
+    item(key = "dialog") {
+        var showOverlayDialog by rememberSaveable { mutableStateOf(false) }
+        var showWindowDialog by rememberSaveable { mutableStateOf(false) }
+        var overlayDialogHoldDown by rememberSaveable { mutableStateOf(false) }
+        var windowDialogHoldDown by rememberSaveable { mutableStateOf(false) }
+        var showWideSuperDialog by rememberSaveable { mutableStateOf(false) }
+        var showWideWindowDialog by rememberSaveable { mutableStateOf(false) }
+        var wideSuperDialogHoldDown by rememberSaveable { mutableStateOf(false) }
+        var wideWindowDialogHoldDown by rememberSaveable { mutableStateOf(false) }
+        var showCenteredDialog by rememberSaveable { mutableStateOf(false) }
+        var centeredDialogHoldDown by rememberSaveable { mutableStateOf(false) }
+
+        SmallTitle(text = "Dialog")
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+        ) {
+            ArrowPreference(
+                title = "Dialog (O)",
+                summary = "点击弹出 Overlay 对话框",
+                onClick = {
+                    showOverlayDialog = true
+                    overlayDialogHoldDown = true
+                },
+                holdDownState = overlayDialogHoldDown,
+            )
+            ArrowPreference(
+                title = "Dialog (W)",
+                summary = "点击弹出 Window 对话框",
+                onClick = {
+                    showWindowDialog = true
+                    windowDialogHoldDown = true
+                },
+                holdDownState = windowDialogHoldDown,
+            )
+            ArrowPreference(
+                title = "Wide Dialog (O)",
+                summary = "竖屏为普通对话框，横屏为双栏对话框",
+                onClick = {
+                    showWideSuperDialog = true
+                    wideSuperDialogHoldDown = true
+                },
+                holdDownState = wideSuperDialogHoldDown,
+            )
+            ArrowPreference(
+                title = "Wide Dialog (W)",
+                summary = "竖屏为普通对话框，横屏为双栏对话框",
+                onClick = {
+                    showWideWindowDialog = true
+                    wideWindowDialogHoldDown = true
+                },
+                holdDownState = wideWindowDialogHoldDown,
+            )
+            ArrowPreference(
+                title = "Centered Dialog (O)",
+                summary = "用 largeScreen = true 强制大屏样式",
+                onClick = {
+                    showCenteredDialog = true
+                    centeredDialogHoldDown = true
+                },
+                holdDownState = centeredDialogHoldDown,
+            )
+        }
+
+        OverlayDialogDemo(
+            show = showOverlayDialog,
+            onDismissRequest = { showOverlayDialog = false },
+            onDismissFinished = { overlayDialogHoldDown = false },
+        )
+        WindowDialogDemo(
+            show = showWindowDialog,
+            onDismissRequest = { showWindowDialog = false },
+            onDismissFinished = { windowDialogHoldDown = false },
+        )
+        WideSuperDialogDemo(
+            show = showWideSuperDialog,
+            onDismissRequest = { showWideSuperDialog = false },
+            onDismissFinished = { wideSuperDialogHoldDown = false },
+        )
+        WideWindowDialogDemo(
+            show = showWideWindowDialog,
+            onDismissRequest = { showWideWindowDialog = false },
+            onDismissFinished = { wideWindowDialogHoldDown = false },
+        )
+        CenteredOverlayDialogDemo(
+            show = showCenteredDialog,
+            onDismissRequest = { showCenteredDialog = false },
+            onDismissFinished = { centeredDialogHoldDown = false },
+        )
+    }
+}
+
+@Composable
+private fun OverlayDialogDemo(
+    show: Boolean,
+    onDismissRequest: () -> Unit,
+    onDismissFinished: () -> Unit,
+) {
+    OverlayDialog(
+        show = show,
+        title = "Dialog (O)",
+        summary = "位于 MiuixPopupHost 内的对话框组件",
+        onDismissRequest = onDismissRequest,
+        onDismissFinished = onDismissFinished,
+        content = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                TextButton(
+                    text = "取消",
+                    onClick = onDismissRequest,
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(Modifier.width(20.dp))
+                TextButton(
+                    text = "确定",
+                    onClick = onDismissRequest,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.textButtonColorsPrimary(),
+                )
+            }
+        },
+    )
+}
+
+@Composable
+private fun WindowDialogDemo(
+    show: Boolean,
+    onDismissRequest: () -> Unit,
+    onDismissFinished: () -> Unit,
+) {
+    WindowDialog(
+        show = show,
+        title = "Dialog (W)",
+        summary = "窗口级对话框，无需 MiuixPopupHost",
+        onDismissRequest = onDismissRequest,
+        onDismissFinished = onDismissFinished,
+        content = {
+            val dismissState = LocalDismissState.current
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                TextButton(
+                    text = "取消",
+                    onClick = { dismissState?.invoke() },
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(Modifier.width(20.dp))
+                TextButton(
+                    text = "确定",
+                    onClick = { dismissState?.invoke() },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.textButtonColorsPrimary(),
+                )
+            }
+        },
+    )
+}
+
+@Composable
+private fun CenteredOverlayDialogDemo(
+    show: Boolean,
+    onDismissRequest: () -> Unit,
+    onDismissFinished: () -> Unit,
+) {
+    OverlayDialog(
+        show = show,
+        title = "Centered Dialog",
+        summary = "largeScreen = true forces the centered presentation on any window size.",
+        largeScreen = true,
+        onDismissRequest = onDismissRequest,
+        onDismissFinished = onDismissFinished,
+        content = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                TextButton(
+                    text = "取消",
+                    onClick = onDismissRequest,
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(Modifier.width(20.dp))
+                TextButton(
+                    text = "确定",
+                    onClick = onDismissRequest,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.textButtonColorsPrimary(),
+                )
+            }
+        },
+    )
+}
+
+@Composable
+private fun WideSuperDialogDemo(
+    show: Boolean,
+    onDismissRequest: () -> Unit,
+    onDismissFinished: () -> Unit,
+) {
+    val windowSize = LocalWindowInfo.current.containerDpSize
+    val isLandscape = windowSize.width > windowSize.height
+
+    OverlayDialog(
+        show = show,
+        title = if (isLandscape) null else "Wide Dialog",
+        summary = if (isLandscape) null else "旋转到横屏查看效果",
+        maxWidth = if (isLandscape) 560.dp else DialogDefaults.MaxWidth,
+        onDismissRequest = onDismissRequest,
+        onDismissFinished = onDismissFinished,
+        content = {
+            WideDialogContent(isLandscape = isLandscape)
+        },
+    )
+}
+
+@Composable
+private fun WideWindowDialogDemo(
+    show: Boolean,
+    onDismissRequest: () -> Unit,
+    onDismissFinished: () -> Unit,
+) {
+    val windowSize = LocalWindowInfo.current.containerDpSize
+    val isLandscape = windowSize.width > windowSize.height
+
+    WindowDialog(
+        show = show,
+        title = if (isLandscape) null else "Wide Dialog",
+        summary = if (isLandscape) null else "旋转到横屏查看效果",
+        maxWidth = if (isLandscape) 560.dp else DialogDefaults.MaxWidth,
+        onDismissRequest = onDismissRequest,
+        onDismissFinished = onDismissFinished,
+        content = {
+            WideDialogContent(isLandscape = isLandscape)
+        },
+    )
+}
+
+@Composable
+private fun WideDialogContent(
+    isLandscape: Boolean,
+) {
+    val dismissState = LocalDismissState.current
+
+    if (isLandscape) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Wide Dialog",
+                    style = MiuixTheme.textStyles.title4,
+                    color = MiuixTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "旋转到横屏查看效果",
+                    style = MiuixTheme.textStyles.body1,
+                    color = MiuixTheme.colorScheme.onSurfaceSecondary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+
+            VerticalDivider(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(horizontal = 20.dp),
+            )
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = 12.dp,
+                    alignment = Alignment.CenterVertically,
+                ),
+            ) {
+                TextButton(
+                    text = "仅允许一次",
+                    onClick = { dismissState?.invoke() },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.textButtonColorsPrimary(),
+                )
+                TextButton(
+                    text = "始终允许",
+                    onClick = { dismissState?.invoke() },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                TextButton(
+                    text = "拒绝",
+                    onClick = { dismissState?.invoke() },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+    } else {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            TextButton(
+                text = "仅允许一次",
+                onClick = { dismissState?.invoke() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.textButtonColorsPrimary(),
+            )
+            TextButton(
+                text = "始终允许",
+                onClick = { dismissState?.invoke() },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            TextButton(
+                text = "拒绝",
+                onClick = { dismissState?.invoke() },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
