@@ -47,6 +47,9 @@ import org.dpdns.mfsky.miuix.ui.screens.componentContent
 import org.dpdns.mfsky.miuix.ui.screens.homeContent
 import org.dpdns.mfsky.miuix.ui.screens.settingsContent
 import org.dpdns.mfsky.miuix.ui.settings.LocalAppSettings
+import org.dpdns.mfsky.miuix.ui.showcase.showcaseCatalog
+import org.dpdns.mfsky.miuix.ui.showcase.showcaseContent
+import org.dpdns.mfsky.miuix.ui.showcase.showcaseListContent
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
@@ -68,10 +71,13 @@ import top.yukonga.miuix.kmp.glass.GlassNavigationItem
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Back
 import top.yukonga.miuix.kmp.icon.extended.GridView
-import top.yukonga.miuix.kmp.icon.extended.Layers
 import top.yukonga.miuix.kmp.icon.extended.ListView
+import top.yukonga.miuix.kmp.icon.extended.Play
 import top.yukonga.miuix.kmp.icon.extended.Settings
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.overScrollVertical
+
+private const val DEMO_ROUTE_PREFIX = "demo:"
 
 @Composable
 fun MiuixCatalogApp() {
@@ -86,14 +92,18 @@ fun MiuixCatalogApp() {
     ) { mutableStateListOf<String>() }
 
     val category = Category.entries.getOrElse(categoryIndex) { Category.BASIC }
-    val current = backStackIds.lastOrNull()?.let { id -> componentCatalog.firstOrNull { it.id == id } }
-    val onSettingsScreen = current == null && category == Category.SETTINGS
+    val stackTop = backStackIds.lastOrNull()
+    val currentComponent = stackTop?.let { id -> componentCatalog.firstOrNull { it.id == id } }
+    val currentDemo = stackTop
+        ?.takeIf { it.startsWith(DEMO_ROUTE_PREFIX) }
+        ?.let { id -> showcaseCatalog.firstOrNull { it.id == id.removePrefix(DEMO_ROUTE_PREFIX) } }
+    val routeId = currentComponent?.id ?: currentDemo?.let { DEMO_ROUTE_PREFIX + it.id }
     var navIndex by remember { mutableIntStateOf(categoryIndex) }
     val snackbarHostState = remember { SnackbarHostState() }
     val backdrop = rememberLayerBackdrop()
     val homeListState = rememberLazyListState()
     val detailListState = rememberLazyListState()
-    val listState = if (current == null) homeListState else detailListState
+    val listState = if (routeId == null) homeListState else detailListState
 
     // `MiuixScrollBehavior` remembers its state keyed on this lambda, so it has to be a stable
     // instance: a fresh `{ ... }` on every recomposition would hand back a brand new behaviour and
@@ -111,7 +121,7 @@ fun MiuixCatalogApp() {
     // the list along with the collapse and recomposes this whole screen on every frame of it. Only
     // the largest height the bar ever reports — its expanded one — is stable, and it is re-measured
     // per destination so that a long title does not leave a gap on a short one.
-    var expandedTopBarHeight by rememberSaveable(current?.id) { mutableIntStateOf(0) }
+    var expandedTopBarHeight by rememberSaveable(routeId) { mutableIntStateOf(0) }
     val topBarHeight = if (expandedTopBarHeight > 0) {
         with(density) { expandedTopBarHeight.toDp() }
     } else {
@@ -124,7 +134,23 @@ fun MiuixCatalogApp() {
     // bar falls back to the opaque surface colour.
     val topBarColor = if (blurSupported) Color.Transparent else MiuixTheme.colorScheme.surface
 
-    BackHandler(enabled = current != null) {
+    val homeBar = when (category) {
+        Category.BASIC -> Triple("MIUIX", "MIUIX 组件库", "miuix")
+        Category.EXTENDED -> Triple("扩展", "扩展与主题", "偏好设置 · 弹层 · 主题 · 玻璃")
+        Category.DEMO -> Triple("演示", "演示页面", "用 miuix 拼出来的完整页面")
+        Category.SETTINGS -> Triple("设置", "设置", "外观 · 效果 · 关于")
+    }
+    val topTitle = currentComponent?.name
+        ?: currentDemo?.title
+        ?: homeBar.first
+    val topLargeTitle = currentComponent?.name
+        ?: currentDemo?.title
+        ?: homeBar.second
+    val topSubtitle = currentComponent?.summary
+        ?: currentDemo?.summary
+        ?: homeBar.third
+
+    BackHandler(enabled = routeId != null) {
         backStackIds.removeLastOrNull()
     }
 
@@ -137,10 +163,10 @@ fun MiuixCatalogApp() {
         homeListState.scrollToItem(0)
     }
 
-    LaunchedEffect(current) {
+    LaunchedEffect(routeId) {
         scrollBehavior.state.heightOffset = 0f
         scrollBehavior.state.contentOffset = 0f
-        if (current != null) {
+        if (routeId != null) {
             detailListState.scrollToItem(0)
         }
     }
@@ -165,7 +191,7 @@ fun MiuixCatalogApp() {
                 // the insets above are horizontal-only.
                 val contentPadding = PaddingValues(
                     top = topBarHeight,
-                    bottom = if (current == null) {
+                    bottom = if (routeId == null) {
                         bottomBarMargin + GlassNavigationBarDefaults.Height + 12.dp
                     } else {
                         24.dp + navigationBarInset
@@ -173,10 +199,11 @@ fun MiuixCatalogApp() {
                 )
                 val listModifier = Modifier
                     .fillMaxSize()
+                    .overScrollVertical()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(padding)
 
-                if (current == null) {
+                if (routeId == null) {
                     LazyColumn(
                         state = homeListState,
                         modifier = listModifier,
@@ -184,6 +211,15 @@ fun MiuixCatalogApp() {
                     ) {
                         if (category == Category.SETTINGS) {
                             settingsContent()
+                        } else if (category == Category.DEMO) {
+                            showcaseListContent(
+                                onOpen = { entry ->
+                                    val route = DEMO_ROUTE_PREFIX + entry.id
+                                    if (backStackIds.lastOrNull() != route) {
+                                        backStackIds.add(route)
+                                    }
+                                },
+                            )
                         } else {
                             homeContent(
                                 category = category,
@@ -205,10 +241,19 @@ fun MiuixCatalogApp() {
                         modifier = listModifier,
                         contentPadding = contentPadding,
                     ) {
-                        componentContent(
-                            entry = current,
-                            snackbarHostState = snackbarHostState,
-                        )
+                        val component = currentComponent
+                        val demo = currentDemo
+                        if (component != null) {
+                            componentContent(
+                                entry = component,
+                                snackbarHostState = snackbarHostState,
+                            )
+                        } else if (demo != null) {
+                            showcaseContent(
+                                entry = demo,
+                                snackbarHostState = snackbarHostState,
+                            )
+                        }
                     }
                 }
             }
@@ -233,17 +278,16 @@ fun MiuixCatalogApp() {
                     )
                 }
                 TopAppBar(
-                    title = current?.name ?: if (onSettingsScreen) "设置" else "MIUIX",
-                    largeTitle = current?.name ?: if (onSettingsScreen) "设置" else "MIUIX 组件库",
-                    subtitle = current?.summary
-                        ?: if (onSettingsScreen) "外观 · 效果 · 关于" else "miuix",
+                    title = topTitle,
+                    largeTitle = topLargeTitle,
+                    subtitle = topSubtitle,
                     color = topBarColor,
                     scrollBehavior = scrollBehavior,
                     modifier = Modifier.onSizeChanged {
                         if (it.height > expandedTopBarHeight) expandedTopBarHeight = it.height
                     },
                     navigationIcon = {
-                        if (current != null) {
+                        if (routeId != null) {
                             IconButton(onClick = { backStackIds.removeLastOrNull() }) {
                                 Icon(
                                     imageVector = MiuixIcons.Back,
@@ -255,7 +299,7 @@ fun MiuixCatalogApp() {
                 )
             }
 
-            if (current == null) {
+            if (routeId == null) {
                 if (settings.useGlassNavigationBar) {
                     GlassNavigationBar(
                         items = Category.entries.map {
@@ -305,6 +349,6 @@ private fun iconFor(category: Category): ImageVector =
     when (category) {
         Category.BASIC -> MiuixIcons.GridView
         Category.EXTENDED -> MiuixIcons.ListView
-        Category.APPEARANCE -> MiuixIcons.Layers
+        Category.DEMO -> MiuixIcons.Play
         Category.SETTINGS -> MiuixIcons.Settings
     }

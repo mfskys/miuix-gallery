@@ -6,16 +6,16 @@ package org.dpdns.mfsky.miuix.ui.catalog
 /**
  * The destinations of the bottom bar, in order.
  *
- * The first three group the components; [SETTINGS] is the settings page, which has no entries of
- * its own.
+ * [BASIC] and [EXTENDED] group the components, [DEMO] lists the full-page
+ * showcases, and [SETTINGS] is the settings page, which has no entries of its own.
  */
 enum class Category(
     val label: String,
     val shortLabel: String,
 ) {
     BASIC("基础组件", "基础"),
-    EXTENDED("扩展与浮层", "扩展"),
-    APPEARANCE("主题与玻璃", "外观"),
+    EXTENDED("扩展与主题", "扩展"),
+    DEMO("演示页面", "演示"),
     SETTINGS("设置", "设置"),
 }
 
@@ -95,18 +95,18 @@ val componentCatalog: List<ComponentEntry> =
         ComponentEntry("cascadinglistpopup", "CascadingListPopup", Category.EXTENDED, "级联列表弹窗（Overlay / Window）"),
         // endregion
         // region Appearance · Theme
-        ComponentEntry("colorscheme", "ColorScheme", Category.APPEARANCE, "亮色 / 暗色配色方案一览"),
-        ComponentEntry("textstyles", "TextStyles", Category.APPEARANCE, "排版样式一览"),
-        ComponentEntry("squircle", "Squircle", Category.APPEARANCE, "超椭圆圆角"),
-        ComponentEntry("icons", "Icons", Category.APPEARANCE, "图标库一览"),
+        ComponentEntry("colorscheme", "ColorScheme", Category.EXTENDED, "亮色 / 暗色配色方案一览"),
+        ComponentEntry("textstyles", "TextStyles", Category.EXTENDED, "排版样式一览"),
+        ComponentEntry("squircle", "Squircle", Category.EXTENDED, "超椭圆圆角"),
+        ComponentEntry("icons", "Icons", Category.EXTENDED, "图标库一览"),
         // endregion
         // region Appearance · Glass
-        ComponentEntry("glass", "Glass", Category.APPEARANCE, "OS4 玻璃材质：材质 / 描边 / 阴影 / 折射"),
-        ComponentEntry("glasstabrow", "GlassTabRow", Category.APPEARANCE, "玻璃标签行"),
-        ComponentEntry("glassnavigationbar", "GlassNavigationBar", Category.APPEARANCE, "玻璃底部导航栏"),
-        ComponentEntry("glasstopappbar", "GlassTopAppBar", Category.APPEARANCE, "玻璃标题栏"),
-        ComponentEntry("glasspopup", "GlassPopup", Category.APPEARANCE, "玻璃弹窗与菜单"),
-        ComponentEntry("glasssegmentedtabrow", "GlassSegmentedTabRow", Category.APPEARANCE, "玻璃分段控件：隐私与安全页那种（白色轨道，选中靠字重，无可见滑块）"),
+        ComponentEntry("glass", "Glass", Category.EXTENDED, "OS4 玻璃材质：材质 / 描边 / 阴影 / 折射"),
+        ComponentEntry("glasstabrow", "GlassTabRow", Category.EXTENDED, "玻璃标签行"),
+        ComponentEntry("glassnavigationbar", "GlassNavigationBar", Category.EXTENDED, "玻璃底部导航栏"),
+        ComponentEntry("glasstopappbar", "GlassTopAppBar", Category.EXTENDED, "玻璃标题栏"),
+        ComponentEntry("glasspopup", "GlassPopup", Category.EXTENDED, "玻璃弹窗与菜单"),
+        ComponentEntry("glasssegmentedtabrow", "GlassSegmentedTabRow", Category.EXTENDED, "玻璃分段控件：隐私与安全页那种（白色轨道，选中靠字重，无可见滑块）"),
         // endregion
     )
 
