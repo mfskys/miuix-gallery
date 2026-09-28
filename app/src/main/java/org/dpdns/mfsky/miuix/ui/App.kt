@@ -75,7 +75,7 @@ import top.yukonga.miuix.kmp.icon.extended.ListView
 import top.yukonga.miuix.kmp.icon.extended.Play
 import top.yukonga.miuix.kmp.icon.extended.Settings
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 private const val DEMO_ROUTE_PREFIX = "demo:"
 
@@ -199,7 +199,7 @@ fun MiuixCatalogApp() {
                 )
                 val listModifier = Modifier
                     .fillMaxSize()
-                    .overScrollVertical()
+                    .scrollEndHaptic()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(padding)
 
