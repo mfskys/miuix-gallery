@@ -1,7 +1,6 @@
 package org.dpdns.mfsky.miuix.ui.showcase
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +37,7 @@ import top.yukonga.miuix.kmp.icon.extended.Store
 import top.yukonga.miuix.kmp.icon.extended.Tasks
 import top.yukonga.miuix.kmp.icon.extended.Tune
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.PressFeedbackType
 
 data class ShowcaseEntry(
     val id: String,
@@ -118,7 +118,11 @@ private fun ShowcaseTile(
     onClick: (ShowcaseEntry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier.clickable { onClick(entry) }) {
+    Card(
+        onClick = { onClick(entry) },
+        modifier = modifier,
+        pressFeedbackType = PressFeedbackType.Sink,
+    ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Box(
                 modifier = Modifier

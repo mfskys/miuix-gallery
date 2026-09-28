@@ -162,8 +162,8 @@ internal fun NewsPage(snackbarHostState: SnackbarHostState) {
                             },
                             endActions = {
                                 if (index == 0) {
-                                    Badge(containerColor = Color(0xFFE5484D), contentColor = Color.White) {
-                                        Text(text = "热", style = TextStyle(fontSize = 10.sp))
+                                    Badge(containerColor = MiuixTheme.colorScheme.error, contentColor = MiuixTheme.colorScheme.onError) {
+                                        Text(text = "热", style = MiuixTheme.textStyles.footnote2)
                                     }
                                 }
                             },
@@ -179,22 +179,20 @@ internal fun NewsPage(snackbarHostState: SnackbarHostState) {
         SmallTitle(text = "热点聚焦")
         Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
             Column {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Badge(containerColor = Color(0xFFE5484D), contentColor = Color.White) {
-                        Text(text = "置顶", style = TextStyle(fontSize = 10.sp))
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "今早的发布会，全部重点都在这里了",
-                        style = MiuixTheme.textStyles.body1,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
+                BasicComponent(
+                    title = "今早的发布会，全部重点都在这里了",
+                    startAction = {
+                        Badge(
+                            containerColor = MiuixTheme.colorScheme.error,
+                            contentColor = MiuixTheme.colorScheme.onError,
+                        ) {
+                            Text(text = "置顶", style = MiuixTheme.textStyles.footnote2)
+                        }
+                    },
+                    onClick = {
+                        scope.launch { snackbarHostState.showSnackbar("打开了「今早的发布会」") }
+                    },
+                )
                 HorizontalDivider()
                 BasicComponent(
                     title = "多设备互联的新玩法，值得每个演示项目试试",
@@ -243,7 +241,7 @@ internal fun VideoPage(snackbarHostState: SnackbarHostState) {
                                     .align(Alignment.BottomEnd)
                                     .padding(8.dp),
                             ) {
-                                Text(text = videoDurations[titleIndex], style = TextStyle(fontSize = 10.sp))
+                                Text(text = videoDurations[titleIndex], style = MiuixTheme.textStyles.footnote2)
                             }
                         }
                         Spacer(modifier = Modifier.height(6.dp))
@@ -279,8 +277,8 @@ internal fun VideoPage(snackbarHostState: SnackbarHostState) {
                             )
                         },
                         endActions = {
-                            Badge(containerColor = Color(0xFFE5484D), contentColor = Color.White) {
-                                Text(text = "直播", style = TextStyle(fontSize = 10.sp))
+                            Badge(containerColor = MiuixTheme.colorScheme.error, contentColor = MiuixTheme.colorScheme.onError) {
+                                Text(text = "直播", style = MiuixTheme.textStyles.footnote2)
                             }
                         },
                         onClick = {
@@ -313,7 +311,7 @@ internal fun VideoPage(snackbarHostState: SnackbarHostState) {
                         Icon(
                             imageVector = if (liked) MiuixIcons.FavoritesFill else MiuixIcons.Favorites,
                             contentDescription = "收藏",
-                            tint = if (liked) Color(0xFFE5484D) else MiuixTheme.colorScheme.onSurface,
+                            tint = if (liked) MiuixTheme.colorScheme.error else MiuixTheme.colorScheme.onSurface,
                         )
                     }
                     IconButton(onClick = { saved = !saved }) {
@@ -366,7 +364,7 @@ internal fun MusicPage() {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = songs[track].first,
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                style = MiuixTheme.textStyles.title3,
             )
             Text(
                 text = songs[track].second,
@@ -378,7 +376,7 @@ internal fun MusicPage() {
                 Icon(
                     imageVector = if (liked) MiuixIcons.FavoritesFill else MiuixIcons.Favorites,
                     contentDescription = "喜欢",
-                    tint = if (liked) Color(0xFFE5484D) else MiuixTheme.colorScheme.onSurface,
+                    tint = if (liked) MiuixTheme.colorScheme.error else MiuixTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -489,7 +487,10 @@ internal fun WeatherPage() {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "28°",
-                style = TextStyle(fontSize = 72.sp, fontWeight = FontWeight.Light),
+                style = MiuixTheme.textStyles.headline1.copy(
+                    fontSize = 72.sp,
+                    fontWeight = FontWeight.Light,
+                ),
             )
             Text(text = "晴 · 体感 30°", style = MiuixTheme.textStyles.body1)
             Text(
@@ -588,7 +589,7 @@ internal fun WeatherPage() {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "62%",
-                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                        style = MiuixTheme.textStyles.title4,
                     )
                     Text(
                         text = "湿度",
@@ -600,7 +601,7 @@ internal fun WeatherPage() {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "东南风 2 级",
-                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                        style = MiuixTheme.textStyles.title4,
                     )
                     Text(
                         text = "风力",
@@ -612,7 +613,7 @@ internal fun WeatherPage() {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "42 优",
-                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                        style = MiuixTheme.textStyles.title4,
                         color = Color(0xFF48B884),
                     )
                     Text(
@@ -687,7 +688,7 @@ internal fun ChatPage() {
                             text = message.second,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                             style = MiuixTheme.textStyles.body2,
-                            color = if (message.first) Color.White else MiuixTheme.colorScheme.onSurface,
+                            color = if (message.first) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSurface,
                         )
                     }
                 }

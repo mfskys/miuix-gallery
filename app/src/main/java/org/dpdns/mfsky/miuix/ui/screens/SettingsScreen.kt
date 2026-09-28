@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import org.dpdns.mfsky.miuix.ui.settings.LocalAppSettings
 import org.dpdns.mfsky.miuix.ui.settings.LocalSetAppSettings
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.SmallTitle
+import top.yukonga.miuix.kmp.basic.Surface
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.blur.isRuntimeShaderSupported
 import top.yukonga.miuix.kmp.preference.ArrowPreference
@@ -193,24 +195,17 @@ private fun KeyColorPicker(
         ) {
             KeyColors.forEachIndexed { index, (_, color) ->
                 val selected = selectedIndex == index + 1
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .then(
-                            if (selected) {
-                                Modifier.border(
-                                    width = 2.dp,
-                                    color = MiuixTheme.colorScheme.onBackground,
-                                    shape = CircleShape,
-                                )
-                            } else {
-                                Modifier
-                            },
-                        )
-                        .clickable { onSelect(index + 1) },
-                )
+                Surface(
+                    onClick = { onSelect(index + 1) },
+                    shape = CircleShape,
+                    color = color,
+                    border = if (selected) {
+                        BorderStroke(width = 2.dp, color = MiuixTheme.colorScheme.onBackground)
+                    } else {
+                        null
+                    },
+                    modifier = Modifier.size(36.dp),
+                ) {}
             }
         }
     }

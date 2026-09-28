@@ -1,7 +1,6 @@
 package org.dpdns.mfsky.miuix.ui.showcase
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,12 +51,12 @@ import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SnackbarHostState
 import top.yukonga.miuix.kmp.basic.Surface
-import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.TabRow
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.VerticalDivider
 import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.preference.SwitchPreference
 import top.yukonga.miuix.kmp.icon.extended.Add
 import top.yukonga.miuix.kmp.icon.extended.Contacts
 import top.yukonga.miuix.kmp.icon.extended.Favorites
@@ -136,7 +136,7 @@ internal fun StorePage(snackbarHostState: SnackbarHostState) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "本周必下载",
-                        style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
+                        style = MiuixTheme.textStyles.title2,
                         color = Color.White,
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -165,7 +165,7 @@ internal fun StorePage(snackbarHostState: SnackbarHostState) {
                             ) {
                                 Text(
                                     text = "${index + 1}",
-                                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                                    style = MiuixTheme.textStyles.title4,
                                     color = if (index < 3) {
                                         showcaseAccent(index)
                                     } else {
@@ -208,8 +208,8 @@ internal fun StorePage(snackbarHostState: SnackbarHostState) {
                         title = name,
                         summary = "新版本优化了整体体验",
                         endActions = {
-                            Badge(containerColor = Color(0xFFE5484D), contentColor = Color.White) {
-                                Text(text = "更", style = TextStyle(fontSize = 10.sp))
+                            Badge(containerColor = MiuixTheme.colorScheme.error, contentColor = MiuixTheme.colorScheme.onError) {
+                                Text(text = "更", style = MiuixTheme.textStyles.footnote2)
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             TextButton(
@@ -247,11 +247,10 @@ internal fun ControlCenterPage() {
                     val index = rowIndex * 4 + columnIndex
                     val on = states[index]
                     Surface(
+                        onClick = { states[index] = !states[index] },
                         shape = RoundedCornerShape(16.dp),
                         color = if (on) showcaseAccent(index) else MiuixTheme.colorScheme.secondary,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { states[index] = !states[index] },
+                        modifier = Modifier.weight(1f),
                     ) {
                         Column(
                             modifier = Modifier.padding(vertical = 12.dp),
@@ -270,7 +269,7 @@ internal fun ControlCenterPage() {
                             )
                             Text(
                                 text = if (on) "已开启" else "已关闭",
-                                style = TextStyle(fontSize = 10.sp),
+                                style = MiuixTheme.textStyles.footnote2,
                                 color = if (on) {
                                     Color.White.copy(alpha = 0.75f)
                                 } else {
@@ -328,20 +327,18 @@ internal fun ControlCenterPage() {
             Column {
                 var powerSave by remember { mutableStateOf(false) }
                 var autoDark by remember { mutableStateOf(false) }
-                BasicComponent(
+                SwitchPreference(
                     title = "省电模式",
                     summary = "降低亮度并限制后台活动",
-                    endActions = {
-                        Switch(checked = powerSave, onCheckedChange = { powerSave = it })
-                    },
+                    checked = powerSave,
+                    onCheckedChange = { powerSave = it },
                 )
                 HorizontalDivider()
-                BasicComponent(
+                SwitchPreference(
                     title = "深色模式跟随日落",
                     summary = "日落后自动切换深色配色",
-                    endActions = {
-                        Switch(checked = autoDark, onCheckedChange = { autoDark = it })
-                    },
+                    checked = autoDark,
+                    onCheckedChange = { autoDark = it },
                 )
             }
         }
@@ -443,7 +440,7 @@ internal fun AgendaPage() {
                 ) {
                     Text(
                         text = "9月",
-                        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                        style = MiuixTheme.textStyles.title4,
                     )
                     Text(
                         text = "2026年",
@@ -482,29 +479,27 @@ internal fun AgendaPage() {
                             ) {
                                 if (day != null) {
                                     val selected = day == selectedDay
-                                    Box(
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if (selected) {
-                                                    MiuixTheme.colorScheme.primary
-                                                } else {
-                                                    Color.Transparent
-                                                },
-                                            ),
-                                        contentAlignment = Alignment.Center,
+                                    Surface(
+                                        onClick = { selectedDay = day },
+                                        shape = CircleShape,
+                                        color = if (selected) {
+                                            MiuixTheme.colorScheme.primary
+                                        } else {
+                                            Color.Transparent
+                                        },
+                                        contentColor = if (selected) {
+                                            MiuixTheme.colorScheme.onPrimary
+                                        } else {
+                                            MiuixTheme.colorScheme.onSurface
+                                        },
+                                        modifier = Modifier.size(30.dp),
                                     ) {
-                                        Text(
-                                            text = "$day",
-                                            style = MiuixTheme.textStyles.body2,
-                                            color = if (selected) {
-                                                Color.White
-                                            } else {
-                                                MiuixTheme.colorScheme.onSurface
-                                            },
-                                            modifier = Modifier.clickable { selectedDay = day },
-                                        )
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            Text(text = "$day", style = MiuixTheme.textStyles.body2)
+                                        }
                                     }
                                 }
                             }
@@ -540,29 +535,19 @@ internal fun AgendaPage() {
                     )
                 } else {
                     events.forEachIndexed { index, event ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(14.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .width(4.dp)
-                                    .height(36.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                                    .background(showcaseAccent(event.third)),
-                            )
-                            Column {
-                                Text(text = event.first, style = MiuixTheme.textStyles.body1)
-                                Text(
-                                    text = event.second,
-                                    style = MiuixTheme.textStyles.footnote1,
-                                    color = MiuixTheme.colorScheme.onBackgroundVariant,
+                        BasicComponent(
+                            title = event.first,
+                            summary = event.second,
+                            startAction = {
+                                Box(
+                                    modifier = Modifier
+                                        .width(4.dp)
+                                        .height(36.dp)
+                                        .clip(RoundedCornerShape(2.dp))
+                                        .background(showcaseAccent(event.third)),
                                 )
-                            }
-                        }
+                            },
+                        )
                         if (index < events.lastIndex) {
                             HorizontalDivider()
                         }
@@ -610,14 +595,14 @@ internal fun ProfilePage(snackbarHostState: SnackbarHostState) {
             ) {
                 Text(
                     text = "林",
-                    style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
+                    style = MiuixTheme.textStyles.title1,
                     color = Color.White,
                 )
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "林小满",
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                    style = MiuixTheme.textStyles.title4,
                 )
                 Text(
                     text = "摄影 / 旅行 / miuix 爱好者",
@@ -720,7 +705,7 @@ private fun ProfileStat(value: String, label: String, modifier: Modifier = Modif
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
-            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+            style = MiuixTheme.textStyles.title4,
         )
         Text(
             text = label,
